@@ -1,6 +1,18 @@
+"""
+Main Script for Inverted Index Demonstration
+
+This script loads documents from the 'documents/' directory, builds an inverted index
+using the InvIndex class, displays the index, and provides an interactive query interface
+for searching documents.
+
+Author: [Your Name]
+Date: [Current Date]
+"""
+
 import os
 import nltk
 
+# Download required NLTK data quietly
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True)
 nltk.download('stopwords', quiet=True)
@@ -10,42 +22,60 @@ from inv_index import InvIndex
 
 
 def load_documents(directory):
-    docs = {}
-    for filename in sorted(os.listdir(directory)):
-        if filename.endswith('.txt'):
-            doc_id = int(filename.split('.')[0])
-            filepath = os.path.join(directory, filename)
-            with open(filepath, 'r', encoding='utf-8') as f:
-                docs[doc_id] = f.read().strip()
+    """
+    Load documents from a specified directory.
+
+    Reads all .txt files in the directory, assigns document IDs based on filenames
+    (e.g., '1.txt' -> ID 1), and stores their content in a dictionary.
+
+    Args:
+        directory (str): Path to the directory containing .txt files.
+
+    Returns:
+        dict: Dictionary of {doc_id: text} pairs.
+    """
+    docs = {}  # Dictionary to store document ID and content
+    for filename in sorted(os.listdir(directory)):  # Iterate over sorted filenames
+        if filename.endswith('.txt'):  # Only process .txt files
+            doc_id = int(filename.split('.')[0])  # Extract ID from filename (e.g., '1.txt' -> 1)
+            filepath = os.path.join(directory, filename)  # Build full file path
+            with open(filepath, 'r', encoding='utf-8') as f:  # Open file with UTF-8 encoding
+                docs[doc_id] = f.read().strip()  # Read content and strip whitespace
     return docs
 
 
 def main():
-    docs = load_documents('documents')
+    """
+    Main function to demonstrate the inverted index.
 
-    print("=== Documents ===")
-    for doc_id, text in docs.items():
+    Loads documents, builds the index, displays it, and enters an interactive search loop.
+    """
+    docs = load_documents('documents')  # Load documents from 'documents/' directory
+
+    print("=== Documents ===")  # Display section header
+    for doc_id, text in docs.items():  # Print each document
         print(f"  Doc {doc_id}: {text}")
 
-    index = InvIndex()
-    index.build_index(docs)
+    index = InvIndex()  # Create an InvIndex instance
+    index.build_index(docs)  # Build the inverted index from documents
 
-    print("\n=== Inverted Index ===")
-    for term in sorted(index.inv.keys()):
+    print("\n=== Inverted Index ===")  # Display section header
+    for term in sorted(index.inv.keys()):  # Print each term and its postings list
         print(f"  {term}: {index.inv[term]}")
 
-    print("\n=== Query Search ===")
-    while True:
-        query = input("\nEnter query (or 'quit' to exit): ").strip()
-        if not query or query.lower() == 'quit':
+    print("\n=== Query Search ===")  # Display section header for search
+    while True:  # Interactive loop for queries
+        query = input("\nEnter query (or 'quit' to exit): ").strip()  # Get user input
+        if not query or query.lower() == 'quit':  # Check for exit condition
             break
-        results = index.search(query)
-        if results:
-            result_str = ', '.join(f'd{doc_id}' for doc_id in results)
+        results = index.search(query)  # Perform search
+        if results:  # If results found
+            result_str = ', '.join(f'd{doc_id}' for doc_id in results)  # Format results
             print(f"  Results: {result_str}")
-        else:
+        else:  # No results
             print("  No matching documents found.")
 
 
 if __name__ == '__main__':
+    main()  # Run the main function when script is executed directly
     main()
