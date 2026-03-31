@@ -12,7 +12,10 @@ Date: [Current Date]
 import os
 import nltk
 
-# Download required NLTK data quietly
+# nltk.download() fetches required NLTK data packages (e.g., tokenizers, corpora) from the NLTK repository.
+# These are needed for text processing functions like tokenization and lemmatization.
+# The 'quiet=True' parameter suppresses download messages for cleaner output.
+# Packages are cached locally after first download.
 nltk.download('punkt', quiet=True)
 nltk.download('punkt_tab', quiet=True)
 nltk.download('stopwords', quiet=True)
